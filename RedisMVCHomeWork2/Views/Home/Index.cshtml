@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model RedisViewModel
+
+<div class="container">
+    <div class="row">
+        <!-- Left Column: Channels Section -->
+        <div class="col-md-6 border-end">
+            <div class="text-center">
+                <!-- "Make New Channel" Button -->
+                <form asp-action="AddCName" method="post" class="d-flex justify-content-center mb-3">
+                    <input type="text" name="newCName" class="form-control me-2" id="inputMessage" placeholder="Yeni Kanal Adı">
+                    <button type="submit" class="btn btn-warning" id="sendButton">Yeni Kanal Yarat</button>
+                </form>
+
+                <!-- Existing Channels -->
+                <div class="channel-list">
+                    @if (Model.RedisValues != null && Model.RedisValues.Any())
+                    {
+                        foreach (var item in Model.RedisValues)
+                        {
+                            <form method="post" action="/Home/SelectCName">
+                                <input type="hidden" name="cName" value="@item" />
+                                <button type="submit" class="btn btn-outline-orange mb-2 d-block w-100">@item</button>
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <p>No Redis values available.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Messages Section -->
+        <div class="col-md-6">
+            <div class="text-center">
+                <!-- Message Input Form -->
+                <div class="d-flex justify-content-center mt-3">
+                    <form method="post" action="/Home/SendMessage" class="d-flex w-100">
+                        <input type="text" class="form-control me-2" id="messageInput" name="message" placeholder="Yeni mesaj">
+                        <button type="submit" class="btn btn-orange" id="sendMessageButton">Mesaj Gönder</button>
+                    </form>
+                </div>
+                <!-- Messages Display -->
+                <div id="messageList" class="border p-3 rounded">
+                    @if (Model.Messages != null && Model.Messages.Any())
+                    {
+                        foreach (var item in Model.Messages)
+                        {
+                            <p class="text-orange">@item</p>
+                        }
+                    }
+                    else
+                    {
+                        <p>No messages available.</p>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styling -->
+<style>
+    .btn-orange {
+        background-color: #ff9900;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-orange:hover {
+        background-color: #e68a00;
+    }
+
+    .text-orange {
+        color: #ff6600;
+    }
+
+    .border {
+        border: 2px solid #ff6600;
+    }
+
+    .rounded {
+        border-radius: 15px;
+    }
+
+    .channel-list button {
+        border-color: #ff6600;
+    }
+</style>
